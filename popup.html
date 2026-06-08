@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeetRemind</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 340px;
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 13px;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: #161b22;
+      padding: 13px 16px;
+      border-bottom: 1px solid #21262d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; }
+    .logo-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: #ffa116;
+    }
+    .logo-text { font-size: 14px; font-weight: 600; color: #ffa116; letter-spacing: 0.3px; }
+    .header-right { display: flex; gap: 6px; }
+    .icon-btn {
+      background: none; border: none; cursor: pointer;
+      color: #7d8590; font-size: 18px; padding: 2px 4px;
+      border-radius: 4px; transition: color 0.15s, background 0.15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .icon-btn:hover { color: #e6edf3; background: #21262d; }
+
+    /* ── Streak ── */
+    .streak-row {
+      padding: 14px 16px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #21262d;
+    }
+    .streak-label { font-size: 10px; color: #7d8590; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+    .streak-num { font-size: 34px; font-weight: 700; color: #ffa116; line-height: 1; }
+    .streak-sub { font-size: 11px; color: #7d8590; margin-top: 2px; }
+    .flame { font-size: 32px; }
+
+    /* ── Mini stats ── */
+    .mini-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid #21262d;
+    }
+    .mini-stat {
+      padding: 10px 0; text-align: center;
+      border-right: 1px solid #21262d;
+    }
+    .mini-stat:last-child { border-right: none; }
+    .mini-num { font-size: 17px; font-weight: 600; }
+    .mini-lbl { font-size: 10px; color: #7d8590; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+    .easy  { color: #00b8a3; }
+    .medium{ color: #ffa116; }
+    .hard  { color: #ef4743; }
+
+    /* ── Problem of the day ── */
+    .section { margin: 12px 14px 0; }
+    .section-label {
+      font-size: 10px; color: #7d8590; text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 6px;
+    }
+    .potd-card {
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 8px; padding: 11px 13px;
+    }
+    .potd-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .potd-title { font-size: 13px; font-weight: 500; color: #e6edf3; }
+    .badge {
+      font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500;
+    }
+    .badge-easy   { background: #00b8a322; color: #00b8a3; }
+    .badge-medium { background: #ffa11622; color: #ffa116; }
+    .badge-hard   { background: #ef474322; color: #ef4743; }
+    .potd-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .tag {
+      font-size: 10px; padding: 2px 7px; border-radius: 20px;
+      background: #21262d; color: #7d8590; border: 1px solid #30363d;
+    }
+    .potd-link {
+      display: inline-block; margin-top: 8px; font-size: 11px;
+      color: #58a6ff; text-decoration: none;
+    }
+    .potd-link:hover { text-decoration: underline; }
+
+    /* ── Weekly goal ── */
+    .goal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .goal-count { font-size: 12px; color: #e6edf3; font-weight: 500; }
+    .progress-track {
+      height: 5px; background: #21262d; border-radius: 10px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: #ffa116; border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Reminder toggle ── */
+    .reminder-card {
+      margin: 12px 14px 0;
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 8px; padding: 11px 13px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .reminder-left { display: flex; align-items: center; gap: 10px; }
+    .bell-icon { font-size: 20px; color: #7d8590; }
+    .reminder-title { font-size: 12px; color: #e6edf3; font-weight: 500; }
+    .reminder-time { font-size: 11px; color: #7d8590; margin-top: 1px; }
+    .toggle {
+      width: 34px; height: 19px; border-radius: 20px; background: #ffa116;
+      position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+      border: none;
+    }
+    .toggle.off { background: #30363d; }
+    .toggle-knob {
+      width: 15px; height: 15px; background: #0d1117; border-radius: 50%;
+      position: absolute; top: 2px; right: 2px; transition: right 0.2s;
+    }
+    .toggle.off .toggle-knob { right: 17px; }
+
+    /* ── Actions ── */
+    .actions { margin: 12px 14px 14px; display: flex; gap: 8px; }
+    .btn-primary {
+      flex: 1; padding: 9px 0; font-size: 12px; font-weight: 600;
+      background: #ffa116; color: #0d1117; border: none;
+      border-radius: 7px; cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.6; cursor: default; }
+    .btn-secondary {
+      padding: 9px 13px; font-size: 12px; color: #7d8590;
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 7px; cursor: pointer; transition: color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover { color: #e6edf3; }
+
+    /* ── Quote ── */
+    .quote {
+      border-top: 1px solid #21262d;
+      padding: 9px 14px;
+      font-size: 10px; color: #7d8590; font-style: italic; text-align: center; line-height: 1.5;
+    }
+
+    /* ── Settings panel ── */
+    .settings-panel {
+      display: none;
+      padding: 14px;
+      border-top: 1px solid #21262d;
+    }
+    .settings-panel.open { display: block; }
+    .setting-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .setting-row:last-child { margin-bottom: 0; }
+    .setting-label { font-size: 12px; color: #7d8590; }
+    .setting-input {
+      background: #161b22; border: 1px solid #30363d; color: #e6edf3;
+      border-radius: 6px; padding: 4px 8px; font-size: 12px; width: 110px; text-align: center;
+    }
+    .save-btn {
+      width: 100%; margin-top: 12px; padding: 8px 0; font-size: 12px;
+      background: #238636; color: #fff; border: none; border-radius: 7px; cursor: pointer;
+    }
+    .save-btn:hover { background: #2ea043; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span class="logo-text">LeetRemind</span>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" id="settings-toggle" title="Settings">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Streak -->
+  <div class="streak-row">
+    <div>
+      <div class="streak-label">Current streak</div>
+      <div class="streak-num" id="streak-num">0</div>
+      <div class="streak-sub">days in a row</div>
+    </div>
+    <div class="flame">🔥</div>
+  </div>
+
+  <!-- Mini stats -->
+  <div class="mini-stats">
+    <div class="mini-stat">
+      <div class="mini-num easy" id="easy-count">0</div>
+      <div class="mini-lbl">Easy</div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-num medium" id="med-count">0</div>
+      <div class="mini-lbl">Medium</div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-num hard" id="hard-count">0</div>
+      <div class="mini-lbl">Hard</div>
+    </div>
+  </div>
+
+  <!-- Problem of the day -->
+  <div class="section">
+    <div class="section-label">Problem of the day</div>
+    <div class="potd-card">
+      <div class="potd-top">
+        <span class="potd-title" id="potd-title">Loading…</span>
+        <span class="badge" id="potd-badge"></span>
+      </div>
+      <div class="potd-tags" id="potd-tags"></div>
+      <a class="potd-link" id="potd-link" href="#" target="_blank">Open on LeetCode →</a>
+    </div>
+  </div>
+
+  <!-- Weekly goal -->
+  <div class="section" style="margin-top: 12px;">
+    <div class="goal-top">
+      <span class="section-label" style="margin:0">Weekly goal</span>
+      <span class="goal-count" id="goal-txt">0 / 5</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <!-- Reminder toggle -->
+  <div class="reminder-card">
+    <div class="reminder-left">
+      <span class="bell-icon">🔔</span>
+      <div>
+        <div class="reminder-title">Daily reminder</div>
+        <div class="reminder-time" id="reminder-time-label">9:00 PM every day</div>
+      </div>
+    </div>
+    <button class="toggle" id="toggle-btn" aria-label="Toggle reminder">
+      <div class="toggle-knob"></div>
+    </button>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="actions">
+    <button class="btn-primary" id="solved-btn">✓ Mark solved today</button>
+    <button class="btn-secondary" id="open-btn">Open LeetCode</button>
+  </div>
+
+  <!-- Quote -->
+  <div class="quote" id="quote"></div>
+
+  <!-- Settings panel -->
+  <div class="settings-panel" id="settings-panel">
+    <div class="setting-row">
+      <span class="setting-label">Reminder time</span>
+      <input type="time" class="setting-input" id="time-input" value="21:00" />
+    </div>
+    <div class="setting-row">
+      <span class="setting-label">Weekly goal</span>
+      <input type="number" class="setting-input" id="goal-input" min="1" max="30" value="5" />
+    </div>
+    <div class="setting-row">
+      <span class="setting-label">Default difficulty</span>
+      <select class="setting-input" id="diff-input">
+        <option>Easy</option>
+        <option selected>Medium</option>
+        <option>Hard</option>
+      </select>
+    </div>
+    <button class="save-btn" id="save-btn">Save settings</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
