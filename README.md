@@ -26,6 +26,4 @@ A daily LeetCode reminder extension with streak tracking, weekly goals, and prob
 - `popup.html`    — extension popup UI
 - `popup.js`      — all popup logic and storage
 
-## Note on icon
-The extension works without an icon file, but Chrome may show a default grey icon.
-To add your own, place a `icon.png` (128×128px) in this folder.
+
